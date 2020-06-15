@@ -8,7 +8,8 @@
   "private": false,
   "scripts": {
     "build": "webpack --progress --config ./webpack/prod.js",
-    "dev": "webpack-dev-server --progress --open --config ./webpack/dev.js"
+    "dev": "yarn watch&&webpack-dev-server --progress --open --config ./webpack/dev.js",
+    "watch":"webpack --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.10.2",

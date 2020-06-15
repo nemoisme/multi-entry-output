@@ -34,11 +34,7 @@ const getViews = path => {
 const templates = getTemplates(resolve('../template'))
 const views = getViews(resolve('../src/views'))
 
-const ViewEntry = views.reduce((cur,view)=>{
-  const [name,suffix] = view.split('.')
-  cur[`${name}.${suffix}`] = resolve('../.root.mouted.entry/test')
-  return cur
-},{})
+let ViewEntry = {}
 
 
 const TemplateEntryPlugins = templates.reduce((cur, tp) => {
@@ -51,6 +47,41 @@ const TemplateEntryPlugins = templates.reduce((cur, tp) => {
   cur.entry[tp] = resolve(`../src/static/js/${tp}`)
   return cur
 }, { entry: {}, plugins: [] })
+
+
+
+
+// 监听watch views下面的文件改动
+
+const watchFile =  () => {
+  const viewPath = resolve('../src/views')
+
+  for (let i = 0; i < views.length; i++) {
+    const [fileName, suffix] = views[i].split('.')
+    ViewEntry[fileName] = resolve(`../.root.mouted.entry/${fileName}`)
+  }
+
+  //view 下面有文件改动
+  fs.watch(viewPath, (event, file) => {
+    const [name, suffix] = file.split('.')
+    const rootStr = (id = 'vueView', ui = 'vue') =>
+      `import Vue from 'vue'
+     import ${id} from '../src/views/${id}.vue'
+     new Vue({
+       el:'#${id}',
+       render:h=>h(${id})
+      })`
+    const path = resolve(`./../.root.mouted.entry/${name}.js`)
+    const isExist = fs.existsSync(path)
+    !isExist && fs.writeFileSync(path, rootStr(name, 'vue'), (err) => {
+      console.log(err, 'err')
+      if (!!err) return
+      ViewEntry[name] = resolve(path)
+    })
+  })
+}
+
+ watchFile()
 
 module.exports = {
   entry: {

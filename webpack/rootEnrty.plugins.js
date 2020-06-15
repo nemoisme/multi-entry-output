@@ -40,19 +40,8 @@ class RootEntry {
       // console.log(compilation,'compilation')
       const views = this.getViewsName(resolve('../src/views'))
       for (let i = 0; i < views.length; i++) {
-        const [name, suffix] = views[i].split('.')
-        const fileStr = this.generateHtml(name, 'test.js')
-        const rootStr = id => `import Vue from 'vue'
-        import vueView from '../src/views/vueView.vue'
-        new Vue({
-          el:'#vueView',
-          render:h=>h(vueView)
-        })`
-
-        fs.writeFile('./../.root.mouted.entry/test.js', rootStr('vueView'), (err) => {
-          console.log(err)
-        })
-
+        const [name, suffix] = views[i].split('.')   // suffix=vue||jsx
+        const fileStr = this.generateHtml(name, `./${name}.js`)
         compilation.assets[`${name}.html`] = {
           source: () => fileStr,
           size: () => fileStr.length
