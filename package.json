@@ -2,14 +2,13 @@
   "name": "mutil-entry-output",
   "version": "1.0.0",
   "description": "multi-entry-output base on webpack",
-  "main": "index.js",
   "author": "nemoisme",
   "license": "MIT",
   "private": false,
   "scripts": {
     "build": "webpack --progress --config ./webpack/prod.js",
-    "dev": "yarn watch&&webpack-dev-server --progress --open --config ./webpack/dev.js",
-    "watch":"webpack --watch"
+    "dev": "webpack-dev-server --watch --progress --open --config ./webpack/dev.js",
+    "watch": "webpack --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.10.2",
@@ -27,6 +26,8 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "vue": "^2.6.11"
   }
 }

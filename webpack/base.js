@@ -5,6 +5,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
 const RootEntry = require('./rootEnrty.plugins')
+const webpack = require('webpack')
+
+
+const {watchFile,ViewEntry} = require('./.watch.view')
+
+
+
 // 获取html文件名，生成多页面入口
 
 const getTemplates = path => {
@@ -31,10 +38,14 @@ const getViews = path => {
 
 
 
+
+
+
+
+
 const templates = getTemplates(resolve('../template'))
 const views = getViews(resolve('../src/views'))
 
-let ViewEntry = {}
 
 
 const TemplateEntryPlugins = templates.reduce((cur, tp) => {
@@ -49,41 +60,7 @@ const TemplateEntryPlugins = templates.reduce((cur, tp) => {
 }, { entry: {}, plugins: [] })
 
 
-
-
-// 监听watch views下面的文件改动
-
-const watchFile =  () => {
-  const viewPath = resolve('../src/views')
-
-  for (let i = 0; i < views.length; i++) {
-    const [fileName, suffix] = views[i].split('.')
-    ViewEntry[fileName] = resolve(`../.root.mouted.entry/${fileName}`)
-  }
-
-  //view 下面有文件改动
-  fs.watch(viewPath, (event, file) => {
-    const [name, suffix] = file.split('.')
-    const rootStr = (id = 'vueView', ui = 'vue') =>
-      `import Vue from 'vue'
-     import ${id} from '../src/views/${id}.vue'
-     new Vue({
-       el:'#${id}',
-       render:h=>h(${id})
-      })`
-    const path = resolve(`./../.root.mouted.entry/${name}.js`)
-    const isExist = fs.existsSync(path)
-    !isExist && fs.writeFileSync(path, rootStr(name, 'vue'), (err) => {
-      console.log(err, 'err')
-      if (!!err) return
-      ViewEntry[name] = resolve(path)
-    })
-  })
-}
-
- watchFile()
-
-module.exports = {
+const baseConfig = {
   entry: {
     ...ViewEntry,
     ...TemplateEntryPlugins.entry
@@ -99,7 +76,7 @@ module.exports = {
         use: 'vue-loader'
       },
       {
-        test: /\.js$/,
+        test: /\.j(s|sx)?$/,
         use: 'babel-loader'
       },
       {
@@ -115,3 +92,29 @@ module.exports = {
     new CleanWebpackPlugin()
   ]
 }
+
+// const compiler = webpack(baseConfig);
+
+
+// compiler.run()
+
+// const watching = compiler.watch({
+//   ignored: ['node_modules/**']
+// }, (err, stats) => {
+//   console.log(11111)
+
+
+//   compiler.run()
+// })
+
+
+
+
+// watchFile(() => {
+//   watching.run()
+// })
+
+module.exports = baseConfig
+
+
+

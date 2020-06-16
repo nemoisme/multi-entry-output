@@ -1,9 +1,9 @@
 <template>
-  <div>vue-page-55555</div>
+  <div>vue5-page</div>
 </template>
 
 <script>
 export default {
-  name:'vue-page'
+  name:'vue1-page'
 }
 </script>
