@@ -41,7 +41,7 @@ class RootEntry {
       const views = this.getViewsName(resolve('../src/views'))
       for (let i = 0; i < views.length; i++) {
         const [name, suffix] = views[i].split('.')   // suffix=vue||jsx
-        const fileStr = this.generateHtml(name, `./${name}.js`)
+        const fileStr = this.generateHtml(name, `./views.js`)
         compilation.assets[`${name}.html`] = {
           source: () => fileStr,
           size: () => fileStr.length

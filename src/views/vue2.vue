@@ -1,5 +1,5 @@
 <template>
-  <div>vue2-page212</div>
+  <div>vue222-page212</div>
 </template>
 
 <script>

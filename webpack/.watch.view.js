@@ -2,10 +2,8 @@
 const path = require('path')
 const resolve = dir => path.resolve(__dirname, dir)
 const fs = require('fs')
-const webpackDevServer = require('webpack-dev-server')
 const webpack = require('webpack')
 
-let ViewEntry = {}
 
 const getViews = path => {
   const files = fs.readdirSync(path)
@@ -18,24 +16,18 @@ const getViews = path => {
   }, temp)
   return filesAll(files)
 }
-
-
-
 const views = getViews(resolve('../src/views'))
 
 // 监听watch views下面的文件改动
 
-const watchFile = (runFunc) => {
-  try {
-    const viewPath = resolve('../src/views')
-    for (let i = 0; i < views.length; i++) {
-      console.log(i)
-      const [fileName, suffix] = views[i].split('.')
-      ViewEntry[fileName] = resolve(`../.root.mouted.entry/${fileName}`)
-    }
+const watchFile = () => {
 
+  try {
+    let ViewEntry = {}
+    const viewPath = resolve('../src/views')
     //view 下面有文件改动
     fs.watch(viewPath, (event, file) => {
+      console.log(file, 'file')
       const [name, suffix] = file.split('.')
       const rootStr = (id = 'vueView', ui = 'vue') => {
         const firstToUpperCaseName = id.slice(0, 1).toUpperCase() + id.slice(1)
@@ -58,15 +50,19 @@ const watchFile = (runFunc) => {
       !isExist && fs.writeFileSync(path, rootStr(name, suffix == 'jsx' ? 'react' : 'vue'), (err) => {
         console.log(err, 'err')
         if (!!err) return
-        ViewEntry[name] = resolve(path)
-        webpackDevServer.addDevServerEntrypoints(require('./dev'), { inline: false })
-        runFunc()
       })
+      const viewIndexStr = fs.readFileSync(resolve('../.root.mouted.entry/index.js'), 'utf8')
+      fs.writeFileSync(
+        resolve('../.root.mouted.entry/index.js'),
+        `${viewIndexStr}\n import './${name}'`,
+        (err) => { if (!!err) return }
+      )
     })
   } catch (e) {
-    console.log(e, 'ee')
+    console.log(e)
   }
 
 }
-watchFile()
-module.exports = { watchFile, ViewEntry }
+
+
+module.exports = watchFile

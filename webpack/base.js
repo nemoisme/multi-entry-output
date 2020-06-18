@@ -8,6 +8,7 @@ const RootEntry = require('./rootEnrty.plugins')
 const webpack = require('webpack')
 
 
+
 const {watchFile,ViewEntry} = require('./.watch.view')
 
 
@@ -24,6 +25,9 @@ const getTemplates = path => {
   }, [])
 }
 
+
+
+
 const getViews = path => {
   const files = fs.readdirSync(path)
   let temp = []
@@ -35,12 +39,6 @@ const getViews = path => {
   }, temp)
   return filesAll(files)
 }
-
-
-
-
-
-
 
 
 const templates = getTemplates(resolve('../template'))
@@ -57,12 +55,12 @@ const TemplateEntryPlugins = templates.reduce((cur, tp) => {
   cur.plugins.push(singleTemplate)
   cur.entry[tp] = resolve(`../src/static/js/${tp}`)
   return cur
-}, { entry: {}, plugins: [] })
+}, { entry: [], plugins: [] })
 
 
 const baseConfig = {
   entry: {
-    ...ViewEntry,
+    'views':resolve('../.root.mouted.entry/index'),
     ...TemplateEntryPlugins.entry
   },
   output: {
@@ -92,27 +90,6 @@ const baseConfig = {
     new CleanWebpackPlugin()
   ]
 }
-
-// const compiler = webpack(baseConfig);
-
-
-// compiler.run()
-
-// const watching = compiler.watch({
-//   ignored: ['node_modules/**']
-// }, (err, stats) => {
-//   console.log(11111)
-
-
-//   compiler.run()
-// })
-
-
-
-
-// watchFile(() => {
-//   watching.run()
-// })
 
 module.exports = baseConfig
 
