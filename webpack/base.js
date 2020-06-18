@@ -6,7 +6,6 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
 const RootEntry = require('./rootEnrty.plugins')
 const webpack = require('webpack')
-const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
 
 
 // 获取html文件名，生成多页面入口
@@ -61,12 +60,32 @@ const baseConfig = {
   },
   output: {
     path: resolve('../dist'),
-
     filename: '[name].js'
   },
-
   optimization: {
-
+    splitChunks: {
+      chunks: 'all',
+      // cacheGroups: {
+      //   reactBase: {  // react 库代码拆分
+      //     test: (module) => {
+      //       return /react(-dom)?/.test(module.context);
+      //     },
+      //     chunks: "all",
+      //     name: "reactBase",
+      //     minSize: 0,
+      //     priority: 9,
+      //   },
+      //   vueBase: {  // vue 库代码拆分
+      //     test: (module) => {
+      //       return /vue(\/dist)/.test(module.context);
+      //     },
+      //     chunks: "all",
+      //     name: "vueBase",
+      //     minSize: 0,
+      //     priority: 9,
+      //   }
+      // }
+    }
   },
   module: {
     rules: [
@@ -89,7 +108,7 @@ const baseConfig = {
     new RootEntry(),
     new VueLoaderPlugin(),
     new CleanWebpackPlugin(),
-    new BundleAnalyzerPlugin()
+
   ]
 }
 

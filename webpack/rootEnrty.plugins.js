@@ -19,6 +19,7 @@ class RootEntry {
     return filesAll(files)
   }
   generateHtml(id, js, css, title) {
+    const jsScript =  js.map(j => `<script src="${j}" ></script>`).join('')
     return `<!doctype html>
     <html lang="en">
     
@@ -30,7 +31,7 @@ class RootEntry {
     
     <body>
         <div id="${id}"></div>
-        <script src="${js}"></script>
+        ${jsScript}
     </body>
     
     </html>`
@@ -41,7 +42,7 @@ class RootEntry {
       const views = this.getViewsName(resolve('../src/views'))
       for (let i = 0; i < views.length; i++) {
         const [name, suffix] = views[i].split('.')   // suffix=vue||jsx
-        const fileStr = this.generateHtml(name, `./views.js`)
+        const fileStr = this.generateHtml(name, [suffix == 'vue' ? './vueBase.js' : './reactBase.js',`./views.js`, ])
         compilation.assets[`${name}.html`] = {
           source: () => fileStr,
           size: () => fileStr.length
