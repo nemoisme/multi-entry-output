@@ -6,11 +6,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
 const RootEntry = require('./rootEnrty.plugins')
 const webpack = require('webpack')
-
-
-
-const {watchFile,ViewEntry} = require('./.watch.view')
-
+const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
 
 
 // 获取html文件名，生成多页面入口
@@ -60,12 +56,17 @@ const TemplateEntryPlugins = templates.reduce((cur, tp) => {
 
 const baseConfig = {
   entry: {
-    'views':resolve('../.root.mouted.entry/index'),
+    'views': resolve('../.root.mouted.entry/index'),
     ...TemplateEntryPlugins.entry
   },
   output: {
     path: resolve('../dist'),
+
     filename: '[name].js'
+  },
+
+  optimization: {
+
   },
   module: {
     rules: [
@@ -74,7 +75,7 @@ const baseConfig = {
         use: 'vue-loader'
       },
       {
-        test: /\.j(s|sx)?$/,
+        test: /\.js(x)?$/,
         use: 'babel-loader'
       },
       {
@@ -87,7 +88,8 @@ const baseConfig = {
     ...TemplateEntryPlugins.plugins,
     new RootEntry(),
     new VueLoaderPlugin(),
-    new CleanWebpackPlugin()
+    new CleanWebpackPlugin(),
+    new BundleAnalyzerPlugin()
   ]
 }
 
